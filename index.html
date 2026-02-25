@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SezenRidice.cz - Seženeme řidiče do 24 hodin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: #0B0B0D; color: #F4F4F5; overflow-x: hidden; }
+        h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; line-height: 0.95; }
+        :root { --gold: #F2C94C; --gold-dark: #D4A72C; --black: #0B0B0D; --black-secondary: #141419; --text-muted: #A7A7AD; }
+        .text-gold { color: var(--gold); }
+        .glass-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; backdrop-filter: blur(14px); }
+        .glass-card-strong { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 18px; backdrop-filter: blur(20px); }
+        .btn-gold { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--gold); color: #0B0B0D; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 12px; border: none; cursor: pointer; text-decoration: none; font-size: 0.95rem; }
+        .btn-gold:hover { background: var(--gold-dark); }
+        .btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 12px; background: transparent; cursor: pointer; text-decoration: none; }
+        .input-field { width: 100%; padding: 0.75rem 1rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: white; font-size: 0.95rem; }
+        .input-field:focus { outline: none; border-color: rgba(242, 201, 76, 0.5); }
+        .form-note { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem; text-align: center; }
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.7), transparent); backdrop-filter: blur(10px); }
+        .nav-links { display: none; }
+        .nav-links a { color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 0.875rem; margin-right: 1.5rem; }
+        .mobile-menu-btn { display: block; background: none; border: none; color: white; cursor: pointer; }
+        .mobile-menu { display: none; position: fixed; inset: 0; z-index: 40; background: rgba(0, 0, 0, 0.95); padding-top: 5rem; padding-left: 1.5rem; }
+        .mobile-menu.active { display: block; }
+        .mobile-menu a { display: block; color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 1.125rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 6rem 1.5rem 3rem; }
+        .hero-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #1a1a2e 0%, #0B0B0D 50%, #16213e 100%); }
+        .hero-overlay { position: absolute; inset: 0; background: rgba(11, 11, 13, 0.6); }
+        .hero-content { position: relative; z-index: 10; max-width: 900px; }
+        .badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: rgba(242, 201, 76, 0.1); border: 1px solid rgba(242, 201, 76, 0.3); border-radius: 9999px; font-size: 0.875rem; color: var(--gold); margin-bottom: 2rem; }
+        .hero h1 { font-size: 3rem; margin-bottom: 1.5rem; }
+        .hero h1 .gold { color: var(--gold); display: block; margin-top: 0.5rem; }
+        .hero p { font-size: 1.125rem; color: rgba(255, 255, 255, 0.8); max-width: 600px; margin: 0 auto 2.5rem; line-height: 1.6; }
+        .hero-buttons { display: flex; flex-direction: column; gap: 1rem; justify-content: center; margin-bottom: 3rem; }
+        .hero-features { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 2rem; font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); }
+        section { padding: 4rem 1.5rem; position: relative; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-header h2 { font-size: 2.25rem; margin-bottom: 1rem; }
+        .section-header p { color: rgba(255, 255, 255, 0.7); font-size: 1.125rem; max-width: 600px; margin: 0 auto; }
+        .bg-secondary { background: var(--black-secondary); }
+        .not-agency-banner { background: rgba(242, 201, 76, 0.1); border: 1px solid rgba(242, 201, 76, 0.3); border-radius: 12px; padding: 1rem 1.5rem; text-align: center; margin: 2rem auto 0; max-width: 800px; }
+        .not-agency-banner p { color: var(--gold); font-weight: 600; font-size: 1rem; }
+        .not-agency-banner span { color: rgba(255, 255, 255, 0.8); font-weight: 400; }
+        .quick-cards { display: grid; grid-template-columns: 1fr; gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
+        .quick-card { text-align: center; padding: 2rem; }
+        .quick-card-icon { width: 48px; height: 48px; color: var(--gold); margin: 0 auto 1rem; }
+        .quick-card h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+        .quick-card p { color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin-bottom: 0.25rem; }
+        .quick-card .price { color: var(--gold); font-weight: 600; font-size: 1.1rem; }
+        .calculator-wrapper { max-width: 900px; margin: 0 auto; }
+        .calc-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+        .calc-section h3 { font-size: 1.25rem; margin-bottom: 1.5rem; }
+        .calc-label { display: block; font-size: 0.875rem; font-weight: 500; color: rgba(255, 255, 255, 0.7); margin-bottom: 0.5rem; }
+        .vehicle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1.5rem; }
+        .vehicle-btn { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem 0.5rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: rgba(255, 255, 255, 0.7); cursor: pointer; font-size: 0.8rem; }
+        .vehicle-btn.active { background: var(--gold); border-color: var(--gold); color: #0B0B0D; }
+        .region-tabs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 1.5rem; }
+        .region-btn { padding: 0.75rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: rgba(255, 255, 255, 0.7); cursor: pointer; font-size: 0.875rem; }
+        .region-btn.active { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.3); color: white; }
+        .days-control { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .days-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; color: white; cursor: pointer; font-size: 1.25rem; }
+        .days-display { font-size: 1.5rem; font-weight: 700; min-width: 60px; text-align: center; }
+        .urgent-checkbox { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; cursor: pointer; }
+        .urgent-checkbox.checked { border-color: var(--gold); background: rgba(242, 201, 76, 0.05); }
+        .price-display { background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem; }
+        .price-total { font-size: 2rem; font-weight: 800; color: var(--gold); text-align: center; margin: 1rem 0; }
+        .price-note { text-align: center; font-size: 0.75rem; color: rgba(255, 255, 255, 0.4); }
+        .rate-info { margin-bottom: 1.5rem; }
+        .rate-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.875rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px; margin-bottom: 0.5rem; font-size: 0.875rem; }
+        .rate-item svg { width: 20px; height: 20px; color: var(--gold); flex-shrink: 0; margin-top: 0.125rem; }
+        .order-form { margin-top: 2rem; display: none; }
+        .order-form.active { display: block; }
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.875rem; font-weight: 500; color: rgba(255, 255, 255, 0.7); margin-bottom: 0.5rem; }
+        .form-group.full-width { grid-column: span 2; }
+        .steps-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .step-card { position: relative; }
+        .step-image { position: relative; height: 280px; border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .step-image img { width: 100%; height: 100%; object-fit: cover; }
+        .step-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.3), transparent); }
+        .step-number { position: absolute; top: 1rem; left: 1rem; width: 48px; height: 48px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.25rem; color: #0B0B0D; }
+        .step-card h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
+        .step-card p { color: rgba(255, 255, 255, 0.6); line-height: 1.6; }
+        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; max-width: 1200px; margin: 0 auto; }
+        .feature-card { text-align: center; padding: 1.5rem 1rem; }
+        .feature-icon { width: 56px; height: 56px; background: rgba(242, 201, 76, 0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+        .feature-icon svg { width: 28px; height: 28px; color: var(--gold); }
+        .about-content { max-width: 800px; margin: 0 auto; }
+        .about-quote { font-size: 1.25rem; font-family: 'Montserrat', sans-serif; font-weight: 700; margin-bottom: 1.5rem; line-height: 1.5; }
+        .about-text { color: rgba(255, 255, 255, 0.7); line-height: 1.7; margin-bottom: 1rem; }
+        .highlight-box { background: rgba(242, 201, 76, 0.1); border: 1px solid rgba(242, 201, 76, 0.3); border-radius: 12px; padding: 1.25rem; margin: 1.5rem 0; }
+        .highlight-box p { color: var(--gold); font-weight: 600; margin: 0; }
+        .stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .stat { text-align: center; }
+        .stat-value { font-size: 2.5rem; font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--gold); }
+        .reviews-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; max-width: 1000px; margin: 0 auto; }
+        .review-card { padding: 1.5rem; }
+        .review-card.hidden { display: none; }
+        .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .reviewer-info { display: flex; align-items: center; gap: 0.75rem; }
+        .reviewer-avatar { width: 44px; height: 44px; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #0B0B0D; font-size: 1rem; }
+        .reviewer-name { font-weight: 600; color: white; font-size: 0.95rem; }
+        .review-date { font-size: 0.8rem; color: rgba(255, 255, 255, 0.5); }
+        .review-stars { display: flex; gap: 0.25rem; }
+        .star-filled { color: var(--gold); }
+        .star-empty { color: rgba(255, 255, 255, 0.2); }
+        .review-text { color: rgba(255, 255, 255, 0.8); line-height: 1.6; font-size: 0.9rem; }
+        .reviews-actions { text-align: center; margin-top: 2rem; }
+        .add-review-section { max-width: 600px; margin: 3rem auto 0; }
+        .star-rating-input { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .star-rating-input svg { width: 32px; height: 32px; cursor: pointer; color: rgba(255, 255, 255, 0.3); }
+        .star-rating-input svg.active { color: var(--gold); }
+        .pricing-table-wrapper { max-width: 800px; margin: 0 auto; overflow-x: auto; }
+        .pricing-table { width: 100%; border-collapse: collapse; }
+        .pricing-table th, .pricing-table td { padding: 1rem; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .pricing-table th { background: rgba(255, 255, 255, 0.05); font-family: 'Montserrat', sans-serif; font-weight: 700; color: white; }
+        .pricing-note { text-align: center; margin-top: 1.5rem; padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .pricing-note span { color: var(--gold); font-weight: 600; }
+        .faq-list { max-width: 800px; margin: 0 auto; }
+        .faq-item { margin-bottom: 0.75rem; overflow: hidden; }
+        .faq-question { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: white; font-size: 1rem; font-weight: 500; text-align: left; cursor: pointer; }
+        .faq-question svg { width: 20px; height: 20px; color: var(--gold); transition: transform 0.3s; }
+        .faq-item.active .faq-question svg { transform: rotate(180deg); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .faq-item.active .faq-answer { max-height: 300px; }
+        .faq-answer-content { padding: 0 1.25rem 1.25rem; color: rgba(255, 255, 255, 0.7); line-height: 1.6; font-size: 0.9rem; }
+        .contact-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; max-width: 1000px; margin: 0 auto; }
+        .contact-info { display: flex; flex-direction: column; gap: 1rem; }
+        .contact-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: white; }
+        .contact-icon { width: 56px; height: 56px; background: rgba(242, 201, 76, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.5rem; }
+        .contact-label { font-size: 0.8rem; color: rgba(255, 255, 255, 0.5); margin-bottom: 0.25rem; }
+        .contact-value { font-size: 1.125rem; font-weight: 600; }
+        footer { background: #0B0B0D; border-top: 1px solid rgba(255, 255, 255, 0.05); padding: 3rem 1.5rem; }
+        .footer-content { max-width: 1200px; margin: 0 auto; }
+        .footer-top { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin-bottom: 2rem; }
+        .footer-logo { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.5rem; }
+        .footer-tagline { color: rgba(255, 255, 255, 0.5); text-align: center; }
+        .footer-bottom { padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
+        .footer-info { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.5rem; font-size: 0.875rem; color: rgba(255, 255, 255, 0.4); }
+        .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 2rem; }
+        .footer-links a { color: rgba(255, 255, 255, 0.4); text-decoration: none; font-size: 0.875rem; }
+        .footer-copyright { font-size: 0.75rem; color: rgba(255, 255, 255, 0.3); margin-top: 1rem; }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; background: rgba(30, 30, 35, 0.95); border: 1px solid rgba(242, 201, 76, 0.3); border-radius: 12px; padding: 1rem 1.5rem; z-index: 1000; transform: translateX(150%); transition: transform 0.3s ease; }
+        .toast.show { transform: translateX(0); }
+        @media(min-width:768px){
+            .nav-links{display:flex}
+            .mobile-menu-btn{display:none}
+            .hero h1{font-size:5rem}
+            .hero-buttons{flex-direction:row}
+            section{padding:5rem 2.5rem}
+            .section-header h2{font-size:3rem}
+            .quick-cards{grid-template-columns:repeat(3,1fr)}
+            .calc-grid{grid-template-columns:1fr 1fr}
+            .steps-grid{grid-template-columns:repeat(3,1fr)}
+            .features-grid{grid-template-columns:repeat(4,1fr)}
+            .form-grid{grid-template-columns:repeat(2,1fr)}
+            .contact-grid{grid-template-columns:1fr 1fr}
+            .reviews-grid{grid-template-columns:repeat(2,1fr)}
+            .footer-top{flex-direction:row;justify-content:space-between}
+            .footer-bottom{flex-direction:row;justify-content:space-between}
+        }
+        @media(min-width:1024px){
+            .hero h1{font-size:6rem}
+            section{padding:7rem 3rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.25rem">SEZEN<span style="color:var(--gold)">ŘIDIČE</span>.CZ</div>
+        <div class="nav-links">
+            <a href="#kalkulacka">Kalkulačka</a>
+            <a href="#jak-to-funguje">Jak to funguje</a>
+            <a href="#recenze">Recenze</a>
+            <a href="#faq">FAQ</a>
+            <a href="tel:+420606396956" class="btn-gold" style="padding:0.5rem 1rem;font-size:0.875rem">Zavolat</a>
+        </div>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#kalkulacka" onclick="toggleMobileMenu()">Kalkulačka</a>
+        <a href="#jak-to-funguje" onclick="toggleMobileMenu()">Jak to funguje</a>
+        <a href="#recenze" onclick="toggleMobileMenu()">Recenze</a>
+        <a href="#faq" onclick="toggleMobileMenu()">FAQ</a>
+        <a href="#kontakt" onclick="toggleMobileMenu()">Kontakt</a>
+    </div>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="badge">⚡ Řidiče seženeme do 24 hodin</div>
+            <h1><span>CHYBÍ VÁM</span><span class="gold">ŘIDIČ?</span></h1>
+            <p>Řidiči na dodávky, kamiony i osobní auta — když váš řidič chybí, my ho zaskočíme.</p>
+            <div class="hero-buttons">
+                <a href="#kalkulacka" class="btn-gold">📱 Vypočítat cenu</a>
+                <a href="tel:+420606396956" class="btn-outline">📞 Zavolat nám</a>
+            </div>
+            <div class="hero-features">
+                <span>✓ Prověření řidiči</span>
+                <span>✓ Pojištění</span>
+                <span>✓ Faktura</span>
+                <span>✓ Dohoda</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-secondary">
+        <div class="quick-cards">
+            <div class="glass-card quick-card">
+                <div class="quick-card-icon">🚐</div>
+                <h3>Řidič na dodávku</h3>
+                <p>Mezinárodní přeprava</p>
+                <p class="price">2 990 Kč/den</p>
+            </div>
+            <div class="glass-card quick-card">
+                <div class="quick-card-icon">🚛</div>
+                <h3>Řidič na kamion</h3>
+                <p>Mezinárodní přeprava</p>
+                <p class="price">4 340 Kč/den</p>
+            </div>
+            <div class="glass-card quick-card">
+                <div class="quick-card-icon">🚗</div>
+                <h3>Řidič na osobní auto</h3>
+                <p>Převoz vozidel</p>
+                <p class="price">24 Kč/km</p>
+            </div>
+        </div>
+        <div class="not-agency-banner">
+            <p>NEJSME AGENTURA! <span>Naši řidiči jsou pod naší rukou — nikdo neznámý z ulice.</span></p>
+        </div>
+    </section>
+
+    <section id="kalkulacka">
+        <div class="section-header">
+            <h2>CENU VIDÍTE <span class="text-gold">OKAMŽITĚ</span></h2>
+            <p>Transparentní ceny bez skrytých poplatků.</p>
+        </div>
+        <div class="calculator-wrapper">
+            <div class="glass-card" style="padding:2rem">
+                <div class="calc-grid">
+                    <div class="calc-section">
+                        <h3>Vypočítejte si <span class="text-gold">cenu</span></h3>
+                        <label class="calc-label">Typ řidiče</label>
+                        <div class="vehicle-grid">
+                            <button type="button" class="vehicle-btn active" onclick="setVehicle('truck')" id="btn-truck">🚛<br>Kamion</button>
+                            <button type="button" class="vehicle-btn" onclick="setVehicle('van')" id="btn-van">🚐<br>Dodávka</button>
+                            <button type="button" class="vehicle-btn" onclick="setVehicle('car')" id="btn-car">🚗<br>Osobní</button>
+                        </div>
+                        <div id="region-selector">
+                            <label class="calc-label">Oblast</label>
+                            <div class="region-tabs">
+                                <button type="button" class="region-btn active" onclick="setRegion('international')" id="btn-int">Mezinárodní</button>
+                                <button type="button" class="region-btn" onclick="setRegion('czech')" id="btn-cz">Česká republika</button>
+                            </div>
+                        </div>
+                        <div id="days-control">
+                            <label class="calc-label">Počet dní</label>
+                            <div class="days-control">
+                                <button type="button" class="days-btn" onclick="changeDays(-1)">−</button>
+                                <span class="days-display" id="days-display">1</span>
+                                <button type="button" class="days-btn" onclick="changeDays(1)">+</button>
+                            </div>
+                        </div>
+                        <div id="km-control" style="display:none">
+                            <label class="calc-label">Vzdálenost (km) - min. 30 km</label>
+                            <div class="days-control">
+                                <button type="button" class="days-btn" onclick="changeKm(-10)">−</button>
+                                <span class="days-display" id="km-display">30</span>
+                                <button type="button" class="days-btn" onclick="changeKm(10)">+</button>
+                            </div>
+                        </div>
+                        <label class="urgent-checkbox" id="urgent-checkbox" onclick="toggleUrgent()">
+                            <input type="checkbox" id="urgent-input" style="width:20px;height:20px">
+                            <span>Urgentní zakázka (do 24h) — příplatek 650 Kč</span>
+                        </label>
+                    </div>
+                    <div class="calc-section">
+                        <h4 style="font-size:1.125rem;margin-bottom:1rem">Naše sazby:</h4>
+                        <div class="rate-info">
+                            <div class="rate-item">🚛 <span><strong>Kamion:</strong> 4 340 Kč/den (mezinárodní) / 2 660 Kč/den (ČR)</span></div>
+                            <div class="rate-item">🚐 <span><strong>Dodávka:</strong> 2 990 Kč/den (mezinárodní) / 1 950 Kč/den (ČR)</span></div>
+                            <div class="rate-item">🚗 <span><strong>Osobní auto:</strong> 24 Kč/km (min. 30 km)</span></div>
+                        </div>
+                        <div class="price-display" id="price-display" style="display:none">
+                            <div class="price-total" id="total-price">0 Kč</div>
+                            <p class="price-note" id="price-breakdown"></p>
+                            <button type="button" class="btn-gold" style="width:100%;margin-top:1rem" onclick="showOrderForm()">Chci objednat</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-form glass-card-strong" id="order-form" style="margin-top:2rem;border:1px solid rgba(242,201,76,0.3);padding:1.5rem">
+                    <h3 style="font-size:1.25rem;margin-bottom:0.5rem">Dokončete <span class="text-gold">objednávku</span></h3>
+                    <p style="color:rgba(255,255,255,0.6);font-size:0.875rem;margin-bottom:1.5rem">Vyplňte údaje a my se vám ozveme do 30 minut.</p>
+                    <form action="https://formspree.io/f/mrearbpa" method="POST">
+                        <input type="hidden" name="Vozidlo" id="hidden-vehicle" value="Kamion">
+                        <input type="hidden" name="Oblast" id="hidden-region" value="Mezinárodní">
+                        <input type="hidden" name="Rozsah" id="hidden-range" value="1 den">
+                        <input type="hidden" name="Cena_odhad" id="hidden-price" value="">
+                        
+                        <div class="form-grid">
+                            <div class="form-group"><label>Jméno a příjmení *</label><input type="text" name="Jméno" class="input-field" placeholder="Jan Novák" required></div>
+                            <div class="form-group"><label>E-mail *</label><input type="email" name="_replyto" class="input-field" placeholder="jan@firma.cz" required></div>
+                            <div class="form-group"><label>Telefon *</label><input type="tel" name="Telefon" class="input-field" placeholder="+420 606 396 956" required></div>
+                            <div class="form-group"><label>Datum a čas potřeby *</label><input type="datetime-local" name="Datum_a_čas" class="input-field" required></div>
+                            <div class="form-group"><label>Místo nástupu (odkud) *</label><input type="text" name="Místo_odkud" class="input-field" placeholder="Praha, ulice..." required></div>
+                            <div class="form-group"><label>Cíl (kam) *</label><input type="text" name="Místo_kam" class="input-field" placeholder="Brno, ..." required></div>
+                            <div class="form-group full-width"><label>Doplňující informace</label><textarea name="Zpráva" class="input-field" rows="3" placeholder="Typ nákladu, speciální požadavky..."></textarea></div>
+                        </div>
+                        <div style="display:flex;gap:1rem;margin-top:1.5rem">
+                            <button type="submit" class="btn-gold" style="flex:1">Odeslat poptávku</button>
+                            <button type="button" class="btn-outline" onclick="hideOrderForm()">Zpět</button>
+                        </div>
+                        <p class="form-note">Odesláním formuláře beru na vědomí, že dochází ke zpracování mých osobních údajů za účelem vyřízení poptávky.</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="jak-to-funguje" class="bg-secondary">
+        <div class="section-header">
+            <h2>JAK TO <span class="text-gold">FUNGUJE</span></h2>
+            <p>Jednoduchý proces od poptávky po realizaci.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-image">
+                    <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&h=400&fit=crop" alt="Řidič">
+                    <div class="step-overlay"></div>
+                    <div class="step-number">1</div>
+                </div>
+                <h3>Poptáte</h3>
+                <p>Vyplníte formulář nebo nám zavoláte. Řeknete nám jakého řidiče potřebujete.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-image">
+                    <img src="https://images.unsplash.com/photo-1566008885218-90abf9200ddb?w=600&h=400&fit=crop" alt="Dodávka">
+                    <div class="step-overlay"></div>
+                    <div class="step-number">2</div>
+                </div>
+                <h3>Seženeme</h3>
+                <p>My okamžitě začneme hledat vhodného řidiče z naší databáze prověřených profesionálů.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-image">
+                    <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&h=400&fit=crop" alt="Kamion">
+                    <div class="step-overlay"></div>
+                    <div class="step-number">3</div>
+                </div>
+                <h3>Doručíme</h3>
+                <p>Řidič vyrazí a doručí náklad nebo vozidlo bezpečně na místo určení.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="o-nas">
+        <div class="section-header">
+            <h2>O <span class="text-gold">NÁS</span></h2>
+        </div>
+        <div class="about-content">
+            <div class="glass-card" style="padding:2rem">
+                <p class="about-quote">SezenRidice.cz vzniklo z potřeby firem a jednotlivců, kteří nemají náhradního řidiče, když dojde k nečekané absenci.</p>
+                <p class="about-text">Sami jsme to zažili – kamion stojí, dodávka nestíhá, zákazník čeká a peníze utíkají. Proto jsme tady my.</p>
+                <div class="highlight-box">
+                    <p>NEJSME AGENTURA! Naši řidiči jsou pod naší rukou — nikdo neznámý z ulice.</p>
+                </div>
+                <p class="about-text">Naši řidiči jsou prověření, pojištění, profesionální a připraveni vyrazit okamžitě.</p>
+                <div class="stats">
+                    <div class="stat"><div class="stat-value">500+</div><div class="stat-label">Spokojených klientů</div></div>
+                    <div class="stat"><div class="stat-value">1000+</div><div class="stat-label">Úspěšných zakázek</div></div>
+                    <div class="stat"><div class="stat-value">24/7</div><div class="stat-label">Nonstop dostupnost</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="recenze" class="bg-secondary">
+        <div class="section-header">
+            <h2>CO ŘÍKAJÍ <span class="text-gold">NAŠI KLIENTI</span></h2>
+            <p>Reference od firem i jednotlivců, kteří nám důvěřují.</p>
+        </div>
+        <div class="reviews-grid" id="reviews-grid"></div>
+        <div class="reviews-actions">
+            <button type="button" class="btn-outline" id="show-all-reviews" onclick="toggleAllReviews()">
+                Zobrazit všechny recenze ▼
+            </button>
+        </div>
+        <div class="add-review-section">
+            <div class="glass-card" style="padding:2rem">
+                <h3 style="font-size:1.25rem;margin-bottom:0.5rem;text-align:center">Napište nám <span class="text-gold">recenzi</span></h3>
+                <p style="color:rgba(255,255,255,0.6);font-size:0.875rem;text-align:center;margin-bottom:1.5rem">Vaše zpětná vazba nám pomáhá zlepšovat služby.</p>
+                <form id="review-form" onsubmit="handleReviewSubmit(event)">
+                    <div class="form-group">
+                        <label>Vaše hodnocení *</label>
+                        <div class="star-rating-input" id="star-rating-input">
+                            <span onclick="setReviewRating(1)">⭐</span>
+                            <span onclick="setReviewRating(2)">⭐</span>
+                            <span onclick="setReviewRating(3)">⭐</span>
+                            <span onclick="setReviewRating(4)">⭐</span>
+                            <span onclick="setReviewRating(5)">⭐</span>
+                        </div>
+                        <input type="hidden" id="review-rating" value="5" required>
+                    </div>
+                    <div class="form-group"><label>Jméno a příjmení *</label><input type="text" id="review-name" class="input-field" placeholder="Jan Novák" required></div>
+                    <div class="form-group"><label>Vaše zkušenost *</label><textarea id="review-text" class="input-field" rows="4" placeholder="Napište nám, jak jste byli spokojeni..." required></textarea></div>
+                    <button type="submit" class="btn-gold" style="width:100%">Odeslat recenzi</button>
+                    <p class="form-note">Odesláním formuláře beru na vědomí, že dochází ke zpracování mých osobních údajů za účelem zveřejnění recenze.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="cenik">
+        <div class="section-header">
+            <h2><span class="text-gold">CENÍK</span></h2>
+            <p>Transparentní ceny bez skrytých poplatků.</p>
+        </div>
+        <div class="pricing-table-wrapper">
+            <div class="glass-card" style="padding:1.5rem">
+                <table class="pricing-table">
+                    <thead>
+                        <tr><th>Typ řidiče</th><th>Mezinárodní</th><th>Česká republika</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>🚛 Řidič na kamion</strong></td><td>4 340 Kč/den</td><td>2 660 Kč/den</td></tr>
+                        <tr><td><strong>🚐 Řidič na dodávku</strong></td><td>2 990 Kč/den</td><td>1 950 Kč/den</td></tr>
+                        <tr><td><strong>🚗 Řidič na osobní auto</strong></td><td colspan="2">24 Kč/km (min. 30 km)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pricing-note">
+                <span>Urgentní zakázky (do 24h):</span> + 650 Kč k celkové ceně
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="bg-secondary">
+        <div class="section-header">
+            <h2><span class="text-gold">ČASTÉ</span> DOTAZY</h2>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">Jak rychle se dá sehnat řidič? <span>▼</span></button>
+                <div class="faq-answer"><div class="faq-answer-content">Na urgentní objednávky do 24 hodin se snažíme vždy sehnat řidiče co nejrychleji. Pro plánované objednávky doporučujeme podat poptávku alespoň několik dní předem.</div></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">Jak se platí? <span>▼</span></button>
+                <div class="faq-answer"><div class="faq-answer-content">Cena se platí až po odvedení práce řidiče. Po dokončení objednávky vám bude vystavena faktura se splatností 14 dní.</div></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">Jste agentura? <span>▼</span></button>
+                <div class="faq-answer"><div class="faq-answer-content"><strong>Ne, nejsme agentura!</strong> Naši řidiči jsou pod naší rukou — nikdo neznámý z ulice. Všichni řidiči jsou naši zaměstnanci nebo dlouhodobí spolupracovníci.</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="kontakt">
+        <div class="section-header">
+            <h2><span class="text-gold">KONTAKT</span></h2>
+            <p>Zavolejte nebo napište — odpovíme do 30 minut.</p>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-info">
+                <a href="tel:+420606396956" class="contact-item">
+                    <div class="contact-icon">📞</div>
+                    <div><div class="contact-label">Telefon</div><div class="contact-value">+420 606 396 956</div></div>
+                </a>
+                <a href="mailto:sezenridice@seznam.cz" class="contact-item">
+                    <div class="contact-icon">✉️</div>
+                    <div><div class="contact-label">E-mail</div><div class="contact-value">sezenridice@seznam.cz</div></div>
+                </a>
+                <div class="contact-item">
+                    <div class="contact-icon">🕐</div>
+                    <div><div class="contact-label">Provozní doba</div><div class="contact-value">Nonstop 24/7</div></div>
+                </div>
+            </div>
+            <form action="https://formspree.io/f/mrearbpa" method="POST" class="glass-card" style="padding:1.5rem">
+                <div class="form-group"><label>Jméno *</label><input type="text" name="name" class="input-field" placeholder="Vaše jméno" required></div>
+                <div class="form-group"><label>E-mail *</label><input type="email" name="_replyto" class="input-field" placeholder="vas@email.cz" required></div>
+                <div class="form-group"><label>Telefon</label><input type="tel" name="phone" class="input-field" placeholder="+420 123 456 789"></div>
+                <div class="form-group"><label>Zpráva *</label><textarea name="message" class="input-field" rows="4" placeholder="Co potřebujete?" required></textarea></div>
+                <button type="submit" class="btn-gold" style="width:100%">Odeslat zprávu</button>
+                <p class="form-note">Odesláním formuláře beru na vědomí, že dochází ke zpracování mých osobních údajů za účelem vyřízení poptávky.</p>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-top">
+                <div>
+                    <div class="footer-logo">SEZEN<span class="text-gold">ŘIDIČE</span>.CZ</div>
+                    <p class="footer-tagline">Spolehliví řidiči, když je potřebujete.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-info">
+                    <span>Tomáš Opletal</span>
+                    <span>IČO: 10849823</span>
+                    <span>Fyzická osoba zapsaná v Živnostenském rejstříku od 12. 5. 2021</span>
+                    <span>Okres Olomouc</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#">Obchodní podmínky</a>
+                    <a href="#">Ochrana osobních údajů</a>
+                </div>
+            </div>
+            <div class="footer-copyright">© 2025 SezenRidice.cz — Všechna práva vyzena</div>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast">
+        <div class="toast-title" id="toast-title">Úspěch</div>
+        <div class="toast-message" id="toast-message">Zpráva byla odeslána.</div>
+    </div>
+
+    <script>
+        // Data recenzí (beze změny)
+        let reviewsData = [
+            {name:"Martin Novotný",date:"2025-02-20",rating:5,text:"Skvělá služba, řidič dorazil přesně na čas a profesionálně odvedl práci. Určitě budu využívat znovu."},
+            {name:"Jana Svobodová",date:"2025-01-15",rating:5,text:"Potřebovala jsem urgentně řidiče na dodávku a do 6 hodin byl na místě. Nemůžu si stěžovat."},
+            {name:"Petr Kovář",date:"2025-03-08",rating:5,text:"Velmi spokojen s komunikací i s řidičem. Vše proběhlo hladce bez jediného problému."},
+            {name:"Lenka Dvořáková",date:"2025-04-22",rating:5,text:"Naše firma využívá služby pravidelně a vždy jsme byli spokojeni. Doporučuji všem."},
+            {name:"Tomáš Horák",date:"2025-02-03",rating:5,text:"Rychlé jednání, férová cena a spolehlivý řidič. Přesně to jsem potřeboval."},
+            {name:"Kateřina Procházková",date:"2025-05-17",rating:5,text:"Profesionální přístup od začátku do konce. Řidič byl slušný a zkušený."},
+            {name:"Michal Veselý",date:"2025-06-30",rating:5,text:"Výborná zkušenost, všechno klaplo jak mělo. Cena byla přesně podle kalkulačky."},
+            {name:"Alena Kučerová",date:"2025-07-12",rating:5,text:"Už podruhé jsem využila tuto službu a opět spokojenost. Děkuji za rychlost."},
+            {name:"David Marek",date:"2025-08-05",rating:5,text:"Sehnali mi řidiče na kamion během jednoho dne. Nemám co vytknout."},
+            {name:"Zuzana Pospíšilová",date:"2025-09-19",rating:5,text:"Výborná komunikace, všechno mi bylo vysvětleno dopředu. Řidič dorazil včas."},
+            {name:"Lukáš Jelínek",date:"2025-10-28",rating:5,text:"Spolehlivá služba za rozumnou cenu. Už jsem doporučil kolegům z branže."},
+            {name:"Eva Králová",date:"2025-11-14",rating:5,text:"Potřebovala jsem převézt osobní auto z Brna do Prahy a vše proběhlo bez problémů."},
+            {name:"Jakub Růžička",date:"2025-12-01",rating:5,text:"Rychlé a profesionální. Řidič byl zkušený a náklad dorazil v pořádku."},
+            {name:"Tereza Fialová",date:"2026-01-08",rating:5,text:"Velká spokojenost s celým procesem. Od poptávky po dokončení zakázky vše šlo hladce."},
+            {name:"Roman Bartoš",date:"2025-03-25",rating:5,text:"Využívám pravidelně pro naši dopravní firmu a zatím vždy spokojenost."},
+            {name:"Markéta Šimková",date:"2025-04-30",rating:5,text:"Příjemně mě překvapila rychlost vyřízení. Řidič byl ochotný a slušný."},
+            {name:"Filip Kopecký",date:"2025-05-22",rating:5,text:"Bezproblémová spolupráce, všechno proběhlo podle dohody. Doporučuji."},
+            {name:"Simona Malá",date:"2025-06-15",rating:5,text:"Potřebovala jsem řidiče na poslední chvíli a oni to zvládli. Skvělé."},
+            {name:"Ondřej Polák",date:"2025-07-29",rating:5,text:"Profesionální přístup a férové ceny. Určitě se na ně obrátím znovu."},
+            {name:"Adéla Sýkorová",date:"2025-08-18",rating:5,text:"Všechno bylo perfektní, od komunikace po samotný převoz. Děkuji moc."},
+            {name:"Vojtěch Tichý",date:"2025-09-05",rating:5,text:"Rychlé sehnání řidiče na kamion. Nemám žádné výhrady."},
+            {name:"Kristýna Vlková",date:"2025-10-12",rating:5,text:"Velmi ochotný personál a spolehlivý řidič. Všechno dopadlo výborně."},
+            {name:"Matěj Blažek",date:"2025-11-30",rating:5,text:"Využil jsem službu při nouzové situaci a zachránili mi zakázku. Děkuji."},
+            {name:"Nikola Doležalová",date:"2025-12-20",rating:5,text:"Převoz osobního auta proběhl bez jediného problému. Řidič byl velmi pečlivý."},
+            {name:"Adam Černý",date:"2026-01-25",rating:5,text:"Skvělá zkušenost, všechno bylo jasné a transparentní. Doporučuji všem."},
+            {name:"Lucie Navrátilová",date:"2025-02-14",rating:5,text:"Rychlá a spolehlivá služba. Řidič dorazil dokonce dřív než bylo domluveno."},
+            {name:"Dominik Vacek",date:"2025-03-31",rating:5,text:"Profesionální jednání a férová cena. Už jsem využil několikrát."},
+            {name:"Barbora Kolářová",date:"2025-04-18",rating:5,text:"Velká spokojenost s celým průběhem zakázky. Všechno klaplo na jedničku."},
+            {name:"Štěpán Říha",date:"2025-05-09",rating:5,text:"Sehnali mi řidiče na dodávku během několika hodin. Nemám co vytknout."},
+            {name:"Michaela Čermáková",date:"2025-06-24",rating:5,text:"Výborná komunikace a spolehlivý řidič. Určitě budu využívat znovu."},
+            {name:"Patrik Hájek",date:"2025-07-07",rating:5,text:"Všechno proběhlo podle plánu. Cena byla přesně taková, jaká byla v kalkulačce."},
+            {name:"Veronika Stehlíková",date:"2025-08-26",rating:5,text:"Potřebovala jsem urgentně řidiče a oni to zvládli perfektně. Děkuji."},
+            {name:"Jan Bureš",date:"2025-09-14",rating:5,text:"Spolehlivá služba za rozumné peníze. Už jsem doporučil známým."},
+            {name:"Petra Pokorná",date:"2025-10-05",rating:5,text:"Profesionální přístup a rychlé vyřízení. Řidič byl zkušený a slušný."},
+            {name:"Radek Soukup",date:"2025-11-22",rating:5,text:"Využívám pravidelně pro naši firmu a vždy jsme spokojeni. Doporučuji."},
+            {name:"Martina Valová",date:"2025-12-12",rating:5,text:"Všechno bylo perfektní, od prvního kontaktu po dokončení zakázky."},
+            {name:"Jaroslav Urban",date:"2026-01-18",rating:5,text:"Rychlé a bezproblémové. Řidič dorazil na čas a odvedl skvělou práci."},
+            {name:"Helena Křížová",date:"2025-01-28",rating:5,text:"Skvělá zkušenost, všechno proběhlo hladce. Určitě se obrátím znovu."},
+            {name:"Pavel Novák",date:"2025-02-08",rating:4,text:"Celkově dobrá zkušenost, ale řidič dorazil o půl hodiny později než bylo domluveno. Jinak vše v pořádku."},
+            {name:"Ivana Horáková",date:"2025-04-12",rating:3,text:"Komunikace mohla být lepší, musela jsem volat dvakrát abych se dozvěděla více informací. Řidič ale byl fajn."},
+            {name:"Miroslav Dvořák",date:"2025-06-03",rating:4,text:"Služba funguje dobře, ale cena je trochu vyšší než jsem čekal. Příště si to lépe spočítám dopředu."},
+            {name:"Zdeňka Procházková",date:"2025-08-20",rating:2,text:"První řidič nedorazil vůbec, museli jsme čekat na náhradního. Druhý už byl v pořádku, ale ztratili jsme čas."},
+            {name:"František Kučera",date:"2025-10-15",rating:4,text:"Dobrá služba, ale urgentní příplatek 650 Kč je podle mě trochu moc. Jinak spokojenost."},
+            {name:"Marcela Veselá",date:"2025-12-05",rating:3,text:"Řidič byl trochu nezkušený, trvalo mu déle než by mělo. Nakonec se to ale zvládlo."},
+            {name:"Luděk Marek",date:"2025-01-22",rating:4,text:"Celkově spokojen, ale objednávka trvala déle než slibovaných 30 minut na potvrzení."},
+            {name:"Božena Pospíšilová",date:"2025-03-17",rating:1,text:"Moc spokojená nejsem, řidič se ztratil a dorazil s hodinovým zpožděním. Zakázka se ale nakonec dokončila."},
+            {name:"Stanislav Jelínek",date:"2025-05-28",rating:4,text:"Dobrá služba, ale chtělo by to lepší informování o stavu objednávky. Musel jsem sám volat."},
+            {name:"Věra Králová",date:"2025-09-08",rating:3,text:"Řidič byl v pohodě, ale cena byla o něco vyšší než mi bylo řečeno předem. Trochu mě to překvapilo."}
+        ];
+
+        let currentVehicle = 'truck', currentRegion = 'international', days = 1, km = 30, isUrgent = false, allReviewsVisible = false, reviewRating = 5;
+        const prices = {
+            international: { truck: { daily: 4340 }, van: { daily: 2990 }, car: { perKm: 24 } },
+            czech: { truck: { daily: 2660 }, van: { daily: 1950 }, car: { perKm: 24 } }
+        };
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        }
+
+        function setVehicle(vehicle) {
+            currentVehicle = vehicle;
+            document.querySelectorAll('.vehicle-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + vehicle).classList.add('active');
+            
+            // Aktualizace skrytého pole pro Formspree
+            const names = {truck: 'Kamion', van: 'Dodávka', car: 'Osobní auto'};
+            document.getElementById('hidden-vehicle').value = names[vehicle];
+
+            if (vehicle === 'car') {
+                document.getElementById('region-selector').style.display = 'none';
+                document.getElementById('days-control').style.display = 'none';
+                document.getElementById('km-control').style.display = 'block';
+            } else {
+                document.getElementById('region-selector').style.display = 'block';
+                document.getElementById('days-control').style.display = 'block';
+                document.getElementById('km-control').style.display = 'none';
+            }
+            calculatePrice();
+        }
+
+        function setRegion(region) {
+            currentRegion = region;
+            document.querySelectorAll('.region-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(region === 'international' ? 'btn-int' : 'btn-cz').classList.add('active');
+            
+            document.getElementById('hidden-region').value = region === 'international' ? 'Mezinárodní' : 'Česká republika';
+            calculatePrice();
+        }
+
+        function changeDays(delta) {
+            days = Math.max(1, days + delta);
+            document.getElementById('days-display').textContent = days;
+            document.getElementById('hidden-range').value = days + ' dní';
+            calculatePrice();
+        }
+
+        function changeKm(delta) {
+            km = Math.max(30, km + delta);
+            document.getElementById('km-display').textContent = km;
+            document.getElementById('hidden-range').value = km + ' km';
+            calculatePrice();
+        }
+
+        function toggleUrgent() {
+            isUrgent = !isUrgent;
+            document.getElementById('urgent-input').checked = isUrgent;
+            document.getElementById('urgent-checkbox').classList.toggle('checked', isUrgent);
+            calculatePrice();
+        }
+
+        function calculatePrice() {
+            let total = 0, breakdown = '';
+            if (currentVehicle === 'car') {
+                total = km * prices.international.car.perKm;
+                breakdown = km + ' km × 24 Kč/km';
+            } else {
+                total = days * prices[currentRegion][currentVehicle].daily;
+                breakdown = days + ' dní × ' + (currentRegion === 'international' ? (currentVehicle === 'truck' ? '4 340' : '2 990') : (currentVehicle === 'truck' ? '2 660' : '1 950')) + ' Kč/den';
+            }
+            if (isUrgent) total += 650;
+            const priceDisplay = document.getElementById('price-display');
+            if (total > 0) {
+                priceDisplay.style.display = 'block';
+                const formattedPrice = total.toLocaleString('cs-CZ') + ' Kč';
+                document.getElementById('total-price').textContent = formattedPrice;
+                document.getElementById('price-breakdown').textContent = breakdown + (isUrgent ? ' + 650 Kč urgent' : '');
+                
+                // Uložit do skrytého pole pro Formspree
+                document.getElementById('hidden-price').value = formattedPrice + (isUrgent ? ' (URGENTNÍ)' : '');
+            }
+        }
+
+        function showOrderForm() {
+            document.getElementById('order-form').classList.add('active');
+            document.getElementById('order-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function hideOrderForm() {
+            document.getElementById('order-form').classList.remove('active');
+        }
+
+        function toggleFaq(button) {
+            const item = button.parentElement;
+            const wasActive = item.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(faq => faq.classList.remove('active'));
+            if (!wasActive) item.classList.add('active');
+        }
+
+        function renderReviews() {
+            const grid = document.getElementById('reviews-grid');
+            grid.innerHTML = '';
+            const sorted = [...reviewsData].sort((a, b) => new Date(b.date) - new Date(a.date));
+            sorted.forEach((review, index) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card review-card' + (index >= 10 ? ' hidden' : '');
+                let stars = '';
+                for (let i = 1; i <= 5; i++) stars += i <= review.rating ? '⭐' : '☆';
+                const date = new Date(review.date).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric' });
+                const initials = review.name.split(' ').map(n => n[0]).join('');
+                card.innerHTML = '<div class="review-header"><div class="reviewer-info"><div class="reviewer-avatar">' + initials + '</div><div><div class="reviewer-name">' + review.name + '</div><div class="review-date">' + date + '</div></div></div><div class="review-stars">' + stars + '</div></div><div class="review-text">' + review.text + '</div>';
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleAllReviews() {
+            allReviewsVisible = !allReviewsVisible;
+            document.querySelectorAll('.review-card').forEach((card, index) => {
+                if (index >= 10) card.classList.toggle('hidden', !allReviewsVisible);
+            });
+            document.getElementById('show-all-reviews').textContent = allReviewsVisible ? 'Skrýt recenze ▲' : 'Zobrazit všechny recenze ▼';
+        }
+
+        function setReviewRating(rating) {
+            reviewRating = rating;
+            document.getElementById('review-rating').value = rating;
+            const stars = document.querySelectorAll('#star-rating-input span');
+            stars.forEach((star, index) => star.style.opacity = index < rating ? '1' : '0.3');
+        }
+
+        function handleReviewSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('review-name').value;
+            const text = document.getElementById('review-text').value;
+            const today = new Date().toISOString().split('T')[0];
+            reviewsData.push({ name, date: today, rating: reviewRating, text });
+            renderReviews();
+            document.getElementById('review-form').reset();
+            setReviewRating(5);
+            showToast('Děkujeme!', 'Vaše recenze byla přidána.');
+        }
+
+        function showToast(title, message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            calculatePrice();
+            renderReviews();
+            setReviewRating(5);
+        });
+    </script>
+</body>
+</html>
